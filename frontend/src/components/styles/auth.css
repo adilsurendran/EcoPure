@@ -1,0 +1,131 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.auth-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f5132, #2ecc71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 950px;
+  background: #ffffff;
+  border-radius: 18px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* LEFT PANEL */
+.auth-left {
+  flex: 1;
+  background: linear-gradient(160deg, #145a32, #27ae60);
+  color: #ffffff;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-left h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.auth-left p {
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+/* RIGHT PANEL */
+.auth-right {
+  flex: 1.2;
+  padding: 40px 45px;
+}
+
+.auth-right h2 {
+  font-size: 26px;
+  color: #145a32;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #6c757d;
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #145a32;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  font-size: 15px;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(39, 174, 96, 0.35);
+}
+
+.error-box {
+  background: #eafaf1;
+  border-left: 4px solid #27ae60;
+  color: #145a32;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .auth-card {
+    width: 95%;
+    flex-direction: column;
+  }
+
+  .auth-left {
+    text-align: center;
+  }
+}

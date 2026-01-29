@@ -1,0 +1,52 @@
+.dealer-container {
+  display: flex;
+  height: 100vh;
+}
+
+.dealer-sidebar {
+  width: 230px;
+  background: linear-gradient(180deg, #145a32, #27ae60);
+  color: white;
+  padding: 20px;
+}
+
+.dealer-sidebar .logo {
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+.dealer-sidebar nav a {
+  display: block;
+  padding: 10px;
+  color: #ecf0f1;
+  text-decoration: none;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.dealer-sidebar nav a.active,
+.dealer-sidebar nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dealer-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dealer-topbar {
+  height: 60px;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.dealer-content {
+  padding: 25px;
+  background: #f4f6f8;
+  flex: 1;
+}

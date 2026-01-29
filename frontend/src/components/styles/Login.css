@@ -1,0 +1,151 @@
+* {
+    padding: 0;
+    margin: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.login-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f5132, #2ecc71);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 900px;
+  height: 520px;
+  background: #ffffff;
+  border-radius: 18px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* LEFT PANEL */
+.login-left {
+  flex: 1;
+  background: linear-gradient(160deg, #145a32, #27ae60);
+  color: #ffffff;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-left h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.login-left p {
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+/* RIGHT PANEL */
+.login-right {
+  flex: 1;
+  padding: 50px 45px;
+}
+
+.login-right h2 {
+  font-size: 28px;
+  color: #145a32;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #6c757d;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #145a32;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #dcdcdc;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+}
+
+.login-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(39, 174, 96, 0.35);
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 18px;
+}
+
+.login-footer a {
+  color: #27ae60;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .login-card {
+    width: 95%;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .login-left {
+    padding: 40px;
+    text-align: center;
+  }
+}
+.error-box {
+  background: #eafaf1;
+  border-left: 4px solid #27ae60;
+  color: #145a32;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
