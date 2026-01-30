@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./protect/ProtectedRoute";
 
 import { lazy, Suspense } from "react";
+import ForgotPassword from "./components/ForgotPassword";
 
 const Login = lazy(() => import("./components/Login"));
 const UserRegister = lazy(() => import("./components/user/UserRegister"));
@@ -32,6 +33,8 @@ function App() {
         <Route path="/register/user" element={<UserRegister />} />
         <Route path="/register/dealer" element={<DealerRegister />} />
         <Route path="/register/worker" element={<WorkerRegister />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
 
         <Route
           path="/admin/*"

@@ -19,3 +19,9 @@ export const updateUserProfile = (data) =>
 
   export const sendUserFeedback = (data) =>
   API.post("/feedback", data);
+
+  export const sendComplaint = (data) =>
+  API.post("/complaints", data);
+
+export const getMyComplaints = () =>
+  API.get("/complaints/my");

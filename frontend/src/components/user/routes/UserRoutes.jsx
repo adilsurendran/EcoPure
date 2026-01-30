@@ -7,6 +7,8 @@ import Feedback from "../Feedback";
 import Complaints from "../Complaints";
 import UserProfile from "../UserProfile";
 import UserFeedback from "../UserFeedback";
+import MyComplaints from "../MyComplaints";
+import UserComplaint from "../UserComplaint";
 
 
 
@@ -18,7 +20,8 @@ export default function UserRoutes() {
         <Route path="/request" element={<PickupRequest />} />
         <Route path="/status" element={<PickupStatus />} />
         <Route path="/feedback" element={<UserFeedback />} />
-        <Route path="/complaints" element={<Complaints />} />
+        <Route path="/complaints" element={<MyComplaints />} />
+        <Route path="/sendcomplaints" element={<UserComplaint />} />
         <Route path="/profile" element={<UserProfile />} />
       </Routes>
     </UserLayout>

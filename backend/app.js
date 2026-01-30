@@ -10,6 +10,8 @@ import adminRouter from "./routes/adminRoutes.js";
 import PickupRequestRouter from "./routes/pickupRequestRoutes.js";
 import wasteRoutes from "./routes/wasteRoutes.js";
 import dealerDirectRequestRoutes from "./routes/dealerDirectRequestRoutes.js";
+import complaintRoutes from "./routes/complaintRoutes.js";
+import forgotPasswordRoutes from "./routes/forgotPasswordRoutes.js";
 
 const app = express();
 // console.log(process.env.CLIENT_URL);
@@ -30,9 +32,11 @@ app.use("/api", userRoutes);
 app.use("/api", dealerRoutes);
 app.use("/api", adminRouter);
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", forgotPasswordRoutes);
 app.use("/api/pickups", PickupRequestRouter);
 app.use("/api", wasteRoutes);
 app.use("/api", dealerDirectRequestRoutes);
+app.use("/api", complaintRoutes);
 
 /* ===========================
    STATIC FILES (IMPORTANT)

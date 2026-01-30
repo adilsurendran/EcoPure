@@ -1,100 +1,3 @@
-// import React, { useState } from "react";
-// import { useNavigate, Link } from "react-router-dom";
-// import "./styles/Login.css";
-// import { loginUser } from "../api/auth.api";
-
-// function Login() {
-//   const navigate = useNavigate();
-
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState("");
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-//     setLoading(true);
-
-//     try {
-//       const res = await loginUser({ username, password });
-//       const role = res.data.user.role;
-//       console.log(res);
-      
-
-//       if (role === "admin") navigate("/admin");
-//       else if (role === "worker") navigate("/worker");
-//       else if (role === "dealer") navigate("/dealer");
-//       else navigate("/user");
-//     } catch (err) {
-//       console.log(err);
-      
-//       setError(err.response?.data?.message || "Login failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="login-wrapper">
-//       <div className="login-card">
-//         <div className="login-left">
-//           <h1>EcoPure</h1>
-//           <p>
-//             Smart Waste Management <br />
-//             for a Cleaner Tomorrow
-//           </p>
-//         </div>
-
-//         <div className="login-right">
-//           <h2>Welcome Back</h2>
-//           <p className="subtitle">Sign in to your account</p>
-
-//           {error && <div className="error-box">{error}</div>}
-
-//           <form onSubmit={handleSubmit}>
-//             <div className="form-group">
-//               <label>Username</label>
-//               <input
-//                 type="text"
-//                 placeholder="Enter your username"
-//                 value={username}
-//                 onChange={(e) => setUsername(e.target.value)}
-//                 required
-//               />
-//             </div>
-
-//             <div className="form-group">
-//               <label>Password</label>
-//               <input
-//                 type="password"
-//                 placeholder="Enter your password"
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//                 required
-//               />
-//             </div>
-
-//             <button className="login-btn" disabled={loading}>
-//               {loading ? "Logging in..." : "Login"}
-//             </button>
-//           </form>
-
-//           {/* 🔽 REGISTRATION LINKS */}
-//           <div className="login-footer">
-//             <p>New here?</p>
-//             <Link to="/register/user">Register as User</Link>
-//             <span style={{ margin: "0 8px" }}>|</span>
-//             <Link to="/register/dealer">Register as Dealer</Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Login;
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
@@ -196,6 +99,7 @@ function Login() {
               Register as Dealer
             </Link>
           </div>
+          <Link to="/forgot-password">Forgot password?</Link>
         </div>
       </div>
     </div>

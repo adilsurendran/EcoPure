@@ -11,6 +11,7 @@ export default function UserSidebar() {
         <NavLink to="/user/status">Pickup Status</NavLink>
         <NavLink to="/user/feedback">Feedback</NavLink>
         <NavLink to="/user/complaints">Complaints</NavLink>
+        <NavLink to="/user/sendcomplaints">Send Complaints</NavLink>
         <NavLink to="/user/profile">Profile</NavLink>
       </nav>
     </aside>

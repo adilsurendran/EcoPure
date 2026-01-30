@@ -12,6 +12,7 @@ import AdminWaste from "../AdminWaste";
 import AdminWasteRequests from "../AdminWasteRequests";
 import AdminDirectRequests from "../AdminDirectRequests";
 import AdminUserFeedbacks from "../AdminUserFeedbacks";
+import AdminComplaints from "../AdminComplaints";
 
 export default function AdminRoutes() {
   return (
@@ -22,7 +23,7 @@ export default function AdminRoutes() {
         <Route path="/workers" element={<Workers />} />
         <Route path="/assign" element={<AssignWorkers />} />
         <Route path="/dealers" element={<Dealers />} />
-        <Route path="/complaints" element={<Complaints />} />
+        <Route path="/complaints" element={<AdminComplaints />} />
         <Route path="/feedback" element={<AdminUserFeedbacks />} />
         <Route path="/post" element={<AdminWaste />} />
         <Route path="/waste/request" element={<AdminWasteRequests />} />

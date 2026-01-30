@@ -48,3 +48,9 @@ export const rejectDirectRequest = (id) =>
 
 export const getAllUserFeedbacks = () =>
   API.get("/admin/feedback");
+
+export const getAllComplaints = () =>
+  API.get("/admin/complaints");
+
+export const replyComplaint = (id, reply) =>
+  API.put(`/admin/complaints/${id}/reply`, { reply });
