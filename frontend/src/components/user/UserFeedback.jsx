@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { sendUserFeedback } from "../../api/user.api";
+import "../styles/UserPremium.css";
+import { MessageSquare, Send } from "lucide-react";
 
 export default function UserFeedback() {
   const [message, setMessage] = useState("");
@@ -15,7 +17,7 @@ export default function UserFeedback() {
     try {
       setLoading(true);
       await sendUserFeedback({ message });
-      alert("Feedback sent");
+      alert("Feedback sent successfully! Thank you for your contribution.");
       setMessage("");
     } catch {
       alert("Failed to send feedback");
@@ -25,36 +27,47 @@ export default function UserFeedback() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Send Feedback</h2>
+    <div className="user-premium-container">
+      <div className="user-premium-header">
+        <div className="user-header-title">
+          <h1>Community Feedback</h1>
+          <p>Help us improve by sharing your thoughts and suggestions</p>
+        </div>
+      </div>
 
-      <form onSubmit={submit} style={styles.form}>
-        <textarea
-          placeholder="Write your feedback..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        />
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+        <div className="user-form-card" style={{ boxShadow: 'var(--user-shadow-md)', animation: 'none' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="stat-icon-wrapper" style={{ background: 'rgba(14, 165, 233, 0.1)', color: '#0ea5e9' }}>
+              <MessageSquare size={24} />
+            </div>
+            <h2 style={{ margin: 0 }}>Send Feedback</h2>
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Sending..." : "Send"}
-        </button>
-      </form>
+          <form onSubmit={submit}>
+            <div className="user-field-group">
+              <label>Your Message</label>
+              <textarea
+                placeholder="Share your experience or suggest improvements..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                rows={6}
+                style={{ resize: 'vertical' }}
+              />
+            </div>
+
+            <button type="submit" className="user-btn-premium user-btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center' }}>
+              {loading ? "Sending..." : (
+                <>
+                  <Send size={18} />
+                  <span>Submit Feedback</span>
+                </>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: 420,
-    margin: "40px auto",
-    padding: 20,
-    border: "1px solid #ddd",
-    borderRadius: 10,
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 12,
-  },
-};

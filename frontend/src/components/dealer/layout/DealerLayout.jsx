@@ -1,15 +1,16 @@
 import DealerSidebar from "./DealerSidebar";
-import DealerTopbar from "./DealerTopbar";
-import "../../styles/dealer.css";
+import "../../styles/user.css";
+import "../../styles/UserPremium.css";
 
 export default function DealerLayout({ children }) {
   return (
-    <div className="dealer-container">
+    <div className="user-container">
       <DealerSidebar />
-      <div className="dealer-main">
-        <DealerTopbar />
-        <div className="dealer-content">{children}</div>
-      </div>
+      <main className="user-main">
+        <div className="user-content">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

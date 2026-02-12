@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { registerDealer } from "../../api/dealer.api";
 import "../styles/auth.css";
 
 export default function DealerRegister() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -52,6 +54,34 @@ export default function DealerRegister() {
     e.preventDefault();
     setError("");
 
+    // 🔍 Strict field validation
+    const requiredFields = ["name", "email", "phone", "address", "lat", "lng", "password", "confirmPassword"];
+    for (const field of requiredFields) {
+      if (!form[field] || form[field].trim() === "") {
+        setError(`Please fill in the ${field} field`);
+        return;
+      }
+    }
+
+    // 📧 Email validation
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(form.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    // 📱 Phone validation (Exactly 10 digits)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(form.phone)) {
+      setError("Please enter a valid 10-digit phone number");
+      return;
+    }
+
+    if (!photo) {
+      setError("Please upload a photo");
+      return;
+    }
+
     if (form.password.length < 6) {
       setError("Password must be at least 6 characters");
       return;
@@ -79,6 +109,20 @@ export default function DealerRegister() {
 
       await registerDealer(data);
       alert("Dealer registered successfully (pending approval)");
+
+      // Clear form and navigate
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        lat: "",
+        lng: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setPhoto(null);
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
@@ -95,86 +139,105 @@ export default function DealerRegister() {
         </div>
 
         <div className="auth-right">
-          <h2>Register as Dealer</h2>
+          <div className="auth-header">
+            <h2>Register as Dealer</h2>
+            <p className="subtitle">Join our sustainability network</p>
+          </div>
 
           {error && <div className="error-box">{error}</div>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Name</label>
-              <input name="name" value={form.name} onChange={handleChange} required />
-            </div>
+          <div className="form-scroll-container">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Name</label>
+                <input name="name" value={form.name} onChange={handleChange} required />
+              </div>
 
-            <div className="form-group">
-              <label>Email</label>
-              <input name="email" value={form.email} onChange={handleChange} />
-            </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input name="email" value={form.email} onChange={handleChange} />
+              </div>
 
-            <div className="form-group">
-              <label>Phone</label>
-              <input name="phone" value={form.phone} onChange={handleChange} required />
-            </div>
+              <div className="form-group">
+                <label>Phone</label>
+                <input name="phone" value={form.phone} onChange={handleChange} required />
+              </div>
 
-            <div className="form-group">
-              <label>Address</label>
-              <input name="address" value={form.address} onChange={handleChange} />
-            </div>
+              <div className="form-group">
+                <label>Address</label>
+                <input name="address" value={form.address} onChange={handleChange} />
+              </div>
 
-            {/* 🔐 PASSWORD */}
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            {/* 📍 LOCATION */}
-            <div className="form-group">
-              <label>
+              {/* 🔐 PASSWORD */}
+              <div className="form-group">
+                <label>Password</label>
                 <input
-                  type="checkbox"
-                  checked={useLocation}
-                  onChange={handleLocationCheck}
-                  style={{ marginRight: "8px" }}
+                  type="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
                 />
-                Use current location
-              </label>
-            </div>
+              </div>
 
-            <div className="form-group">
-              <label>Latitude</label>
-              <input name="lat" value={form.lat} onChange={handleChange} />
-            </div>
+              <div className="form-group">
+                <label>Confirm Password</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Longitude</label>
-              <input name="lng" value={form.lng} onChange={handleChange} />
-            </div>
+              {/* 📍 LOCATION */}
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={useLocation}
+                    onChange={handleLocationCheck}
+                  />
+                  Use current location
+                </label>
+              </div>
 
-            <div className="form-group">
-              <label>Photo</label>
-              <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} />
-            </div>
+              <div className="form-group">
+                <label>Latitude</label>
+                <input
+                  name="lat"
+                  value={form.lat}
+                  onChange={handleChange}
+                  placeholder="Auto-filled or manual"
+                />
+              </div>
 
-            <button className="submit-btn" disabled={loading}>
-              {loading ? "Submitting..." : "Register"}
-            </button>
-          </form>
+              <div className="form-group">
+                <label>Longitude</label>
+                <input
+                  name="lng"
+                  value={form.lng}
+                  onChange={handleChange}
+                  placeholder="Auto-filled or manual"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Photo</label>
+                <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} />
+              </div>
+
+              <button className="submit-btn" disabled={loading}>
+                {loading ? "Submitting..." : "Register"}
+              </button>
+
+              <div className="auth-footer">
+                <span>Already have an account?</span>
+                <Link to="/login" className="auth-link">Login here</Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

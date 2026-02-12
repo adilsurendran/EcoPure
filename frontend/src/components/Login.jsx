@@ -20,7 +20,9 @@ function Login() {
 
     try {
       const res = await loginUser({ username, password });
+      console.log(res);
       setUser(res.data.user); // 🔑 SINGLE SOURCE OF TRUTH
+      
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed"
@@ -35,7 +37,7 @@ function Login() {
     if (!user) return;
 
     if (user.role === "admin") navigate("/admin");
-    else if (user.role === "worker") navigate("/worker");
+    else if (user.role === "worker") navigate("/worker/assigned");
     else if (user.role === "dealer") navigate("/dealer");
     else navigate("/user");
   }, [user, navigate]);
@@ -99,7 +101,9 @@ function Login() {
               Register as Dealer
             </Link>
           </div>
-          <Link to="/forgot-password">Forgot password?</Link>
+          <div style={{ "display": "flex", "justifyContent": "center", "marginTop": "10px" }}>
+            <Link to="/forgot-password">Forgot password?</Link>
+          </div>
         </div>
       </div>
     </div>

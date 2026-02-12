@@ -1,10 +1,17 @@
 import express from "express";
 
 import { requireAuth } from "../middlewares/authMiddleware.js";
-import { addWorkerByAdmin, getAllDealers, getAllUserFeedbacks, getAllUsers, getAllWorkers, toggleDealerStatus, toggleUserStatus, toggleWorkerStatus } from "../controllers/adminController.js";
+import { addWorkerByAdmin, getAdminStats, getAllDealers, getAllUserFeedbacks, getAllUsers, getAllWorkers, toggleDealerStatus, toggleUserStatus, toggleWorkerStatus } from "../controllers/adminController.js";
 import { authorizeRoles } from "../middlewares/roleMiddleware.js";
 
 const adminRouter = express.Router();
+
+adminRouter.get(
+  "/admin/stats",
+  requireAuth,
+  authorizeRoles("admin"),
+  getAdminStats
+);
 
 adminRouter.get(
   "/admin/users",

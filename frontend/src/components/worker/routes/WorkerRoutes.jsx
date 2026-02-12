@@ -10,7 +10,7 @@ export default function WorkerRoutes() {
   return (
     <WorkerLayout>
       <Routes>
-        <Route path="/" element={<WorkerDashboard />} />
+        {/* <Route path="/" element={<WorkerDashboard />} /> */}
         <Route path="/assigned" element={<AssignedPickups />} />
         <Route path="/history" element={<PickupHistory />} />
       </Routes>

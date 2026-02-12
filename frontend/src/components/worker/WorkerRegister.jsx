@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { registerWorker } from "../../api/worker.api";
 import "../styles/auth.css";
 
 export default function WorkerRegister() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -70,6 +72,20 @@ export default function WorkerRegister() {
       await registerWorker(data);
 
       alert("Worker registered successfully (pending admin approval)");
+
+      // Clear form and navigate
+      setForm({
+        name: "",
+        phone: "",
+        email: "",
+        age: "",
+        gender: "",
+        lat: "",
+        lng: "",
+      });
+      setProof(null);
+      setPhoto(null);
+      navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
@@ -86,121 +102,129 @@ export default function WorkerRegister() {
         </div>
 
         <div className="auth-right">
-          <h2>Join as Worker</h2>
-          <p className="subtitle">Register to start working with EcoPure</p>
+          <div className="auth-header">
+            <h2>Join as Worker</h2>
+            <p className="subtitle">Register to start working with EcoPure</p>
+          </div>
 
           {error && <div className="error-box">{error}</div>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Name</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Phone</label>
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Age</label>
-              <input
-                type="number"
-                name="age"
-                value={form.age}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Gender</label>
-              <select
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            {/* 📍 LOCATION */}
-            <div className="form-group">
-              <label>
+          <div className="form-scroll-container">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Name</label>
                 <input
-                  type="checkbox"
-                  checked={useLocation}
-                  onChange={handleLocationCheck}
-                  style={{ marginRight: "8px" }}
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  required
                 />
-                Use current location
-              </label>
-            </div>
+              </div>
 
-            <div className="form-group">
-              <label>Latitude</label>
-              <input
-                name="lat"
-                value={form.lat}
-                onChange={handleChange}
-                placeholder="Auto-filled or enter manually"
-              />
-            </div>
+              <div className="form-group">
+                <label>Phone</label>
+                <input
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Longitude</label>
-              <input
-                name="lng"
-                value={form.lng}
-                onChange={handleChange}
-                placeholder="Auto-filled or enter manually"
-              />
-            </div>
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                />
+              </div>
 
-            {/* 📄 PROOF */}
-            <div className="form-group">
-              <label>ID Proof (Aadhaar / ID)</label>
-              <input
-                type="file"
-                onChange={(e) => setProof(e.target.files[0])}
-              />
-            </div>
+              <div className="form-group">
+                <label>Age</label>
+                <input
+                  type="number"
+                  name="age"
+                  value={form.age}
+                  onChange={handleChange}
+                />
+              </div>
 
-            {/* 📷 PHOTO */}
-            <div className="form-group">
-              <label>Photo</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setPhoto(e.target.files[0])}
-              />
-            </div>
+              <div className="form-group">
+                <label>Gender</label>
+                <select
+                  name="gender"
+                  value={form.gender}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
 
-            <button className="submit-btn" disabled={loading}>
-              {loading ? "Submitting..." : "Register"}
-            </button>
-          </form>
+              {/* 📍 LOCATION */}
+              <div className="form-group">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={useLocation}
+                    onChange={handleLocationCheck}
+                  />
+                  Use current location
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label>Latitude</label>
+                <input
+                  name="lat"
+                  value={form.lat}
+                  onChange={handleChange}
+                  placeholder="Auto-filled or manual"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Longitude</label>
+                <input
+                  name="lng"
+                  value={form.lng}
+                  onChange={handleChange}
+                  placeholder="Auto-filled or manual"
+                />
+              </div>
+
+              {/* 📄 PROOF */}
+              <div className="form-group">
+                <label>ID Proof (Aadhaar / ID)</label>
+                <input
+                  type="file"
+                  onChange={(e) => setProof(e.target.files[0])}
+                />
+              </div>
+
+              {/* 📷 PHOTO */}
+              <div className="form-group">
+                <label>Photo</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                />
+              </div>
+
+              <button className="submit-btn" disabled={loading}>
+                {loading ? "Submitting..." : "Register"}
+              </button>
+
+              <div className="auth-footer">
+                <span>Already have an account?</span>
+                <Link to="/login" className="auth-link">Login here</Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

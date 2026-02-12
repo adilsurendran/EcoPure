@@ -1,6 +1,10 @@
 import User from "../models/User.js";
 import Login from "../models/Login.js";
 import Worker from "../models/Worker.js";
+import Complaint from "../models/Complaint.js";
+import WasteRequest from "../models/WasteRequest.js";
+import DealerDirectRequest from "../models/DealerDirectRequest.js";
+import PickupRequest from "../models/pickupRequest.js";
 
 /**
  * GET /api/admin/users
@@ -15,7 +19,7 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).json({ message: "Failed to fetch users" });
   }
 };
@@ -52,13 +56,13 @@ export const toggleUserStatus = async (req, res) => {
  */
 export const getAllWorkers = async (req, res) => {
   console.log("hioo");
-  
+
   try {
     const workers = await Worker.find()
       .populate("authId", "username isActive role")
       .sort({ createdAt: -1 });
-      console.log(workers);
-      
+    console.log(workers);
+
 
     res.status(200).json(workers);
   } catch (error) {
@@ -108,7 +112,7 @@ export const addWorkerByAdmin = async (req, res) => {
     } = req.body;
 
     // check existing login
-    const existing = await Login.findOne({ username:email });
+    const existing = await Login.findOne({ username: email });
     if (existing) {
       return res
         .status(400)
@@ -119,7 +123,7 @@ export const addWorkerByAdmin = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const login = await Login.create({
-      username:email,
+      username: email,
       password: hashedPassword,
       role: "worker",
       isActive: true,
@@ -184,5 +188,54 @@ export const getAllUserFeedbacks = async (req, res) => {
     res.json(feedbacks);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch feedbacks" });
+  }
+};
+
+/**
+ * GET admin dashboard statistics in single call
+ */
+export const getAdminStats = async (req, res) => {
+  try {
+    // 1. Total Registered Users (Citizens)
+    const totalUsers = await User.countDocuments();
+
+    // 2. Total Registered Workers (Technical Team)
+    const totalWorkers = await Worker.countDocuments();
+
+    // 3. Total Registered Dealers (Portal Partners)
+    const totalDealers = await Dealer.countDocuments();
+
+    // 4. Pending Complaints (Awaiting reply from Admin)
+    const pendingComplaints = await Complaint.countDocuments({
+      reply: { $exists: false }
+    });
+
+    // 5. Pending Waste Market Requests (Requests for existing waste posts)
+    const pendingWasteRequests = await WasteRequest.countDocuments({
+      status: "pending"
+    });
+
+    // 6. Pending Custom Procurement Requests (Direct material requests)
+    const pendingDirectRequests = await DealerDirectRequest.countDocuments({
+      status: "pending"
+    });
+
+    // 7. Pending User Pickup Requests (Citizen requests for waste collection)
+    const pendingUserPickups = await PickupRequest.countDocuments({
+      status: "pending"
+    });
+
+    res.status(200).json({
+      totalUsers,
+      totalWorkers,
+      totalDealers,
+      pendingComplaints,
+      pendingWasteRequests,
+      pendingDirectRequests,
+      pendingUserPickups
+    });
+  } catch (error) {
+    console.error("Stats Fetch Error:", error);
+    res.status(500).json({ message: "System failed to compute dashboard metrics" });
   }
 };

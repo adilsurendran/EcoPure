@@ -91,7 +91,7 @@ export const deleteWastePost = async (req, res) => {
 
 export const getAllWastePosts = async (req, res) => {
   try {
-    const posts = await WastePost.find().sort({ createdAt: -1 });
+    const posts = await WastePost.find({availableWeight: {$gt: 0}}).sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch waste posts" });

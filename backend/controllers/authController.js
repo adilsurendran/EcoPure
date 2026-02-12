@@ -1,10 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/token.js";
+import {generateAccessToken,generateRefreshToken} from "../utils/token.js";
 import Login from "../models/Login.js";
 
 export const login = async (req, res) => {
@@ -16,7 +12,9 @@ export const login = async (req, res) => {
     // 1️⃣ Check user exists in Login table
     const authUser = await Login.findOne({ username });
     if (!authUser) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+      
+      return res.status(404).json({ message: "Invalid credentials" });
     }
 
     // 2️⃣ Check account active
@@ -29,7 +27,7 @@ export const login = async (req, res) => {
     // 3️⃣ Compare password
     const isMatch = await bcrypt.compare(password, authUser.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(404).json({ message: "Invalid credentials" });
     }
 
     // 4️⃣ Token payload
@@ -70,8 +68,6 @@ export const login = async (req, res) => {
   }
 };
 
-
-
 export const getMe = async (req, res) => {
   try {
     const authUser = await Login.findById(req.user.id).select(
@@ -94,8 +90,6 @@ export const getMe = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 export const refreshToken = async (req, res) => {
   try {

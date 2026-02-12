@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { getDealerProfile, updateDealerProfile } from "../../api/dealer.api";
-import { 
-  Edit, 
-  Save, 
-  X, 
-  Mail, 
-  Phone, 
-  MapPin, 
+import "../styles/UserPremium.css";
+import {
+  Pencil,
+  Save,
+  X,
+  Mail,
+  Phone,
+  MapPin,
   User,
-  Navigation
+  Navigation,
+  Camera,
+  Briefcase
 } from "lucide-react";
 
 export default function DealerProfile() {
@@ -25,36 +28,31 @@ export default function DealerProfile() {
     lng: "",
   });
 
-  const [originalForm, setOriginalForm] = useState({});
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  /* ======================
-     Load Profile
-  ====================== */
   useEffect(() => {
     loadProfile();
   }, []);
+
+  const api = 'http://localhost:8000/uploads/dealer/';
 
   const loadProfile = async () => {
     try {
       const res = await getDealerProfile();
       const data = res.data;
-      
-      const profileData = {
+
+      setForm({
         name: data.name || "",
         email: data.email || "",
         phone: data.phone || "",
         address: data.address || "",
         lat: data.location?.lat || "",
         lng: data.location?.lng || "",
-      };
-
-      setForm(profileData);
-      setOriginalForm(profileData);
+      });
 
       if (data.photo) {
-        setPhotoPreview(`http://localhost:8000/uploads/dealer/${data.photo}`);
+        setPhotoPreview(`${api}${data.photo}`);
       }
     } catch (err) {
       console.error(err);
@@ -64,9 +62,6 @@ export default function DealerProfile() {
     }
   };
 
-  /* ======================
-     Handlers
-  ====================== */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -74,37 +69,30 @@ export default function DealerProfile() {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image size should be less than 5MB');
-      return;
-    }
-
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
   };
 
-  const handleEditToggle = () => {
-    if (isEditing) {
-      // Cancel edit - restore original values
-      setForm(originalForm);
-      setPhotoFile(null);
-      setPhotoPreview(originalForm.photo ? 
-        `http://localhost:8000/uploads/dealer/${originalForm.photo}` : null);
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setForm({
+            ...form,
+            lat: position.coords.latitude.toFixed(6),
+            lng: position.coords.longitude.toFixed(6)
+          });
+          alert("Location captured successfully!");
+        },
+        (error) => {
+          alert("Unable to retrieve location. Please enable location services.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
     }
-    setIsEditing(!isEditing);
   };
 
-  /* ======================
-     Submit
-  ====================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -122,262 +110,149 @@ export default function DealerProfile() {
       }
 
       await updateDealerProfile(formData);
-      alert("Profile updated successfully");
-      
-      // Update original form
-      setOriginalForm(form);
+      alert("Business profile updated successfully");
       setIsEditing(false);
       loadProfile();
     } catch (err) {
-      console.error(err);
       alert("Update failed");
     } finally {
       setSaving(false);
     }
   };
 
-  /* ======================
-     Loading State
-  ====================== */
-  if (loading) {
-    return (
-      <div style={styles.loadingContainer}>
-        <div style={styles.loadingSpinner}></div>
-        <p style={styles.loadingText}>Loading profile...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="loading-spinner">Loading business profile...</div>;
 
   return (
-    <div style={styles.page}>
-      <div style={styles.container}>
-        {/* Profile Card */}
-        <div style={styles.profileCard}>
-          {/* Header with Edit Toggle */}
-          <div style={styles.header}>
-            <h1 style={styles.title}>My Profile</h1>
-            <button 
-              onClick={handleEditToggle}
-              style={isEditing ? styles.cancelButton : styles.editButton}
-            >
-              {isEditing ? (
-                <>
-                  <X size={18} style={{ marginRight: 6 }} />
-                  Cancel
-                </>
-              ) : (
-                <>
-                  <Edit size={18} style={{ marginRight: 6 }} />
-                  Edit Profile
-                </>
-              )}
-            </button>
-          </div>
+    <div className="user-premium-container">
+      <div className="user-premium-header">
+        <div className="user-header-title">
+          <h1>Business Account</h1>
+          <p>Manage your organizational identity and operational preferences</p>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="user-stat-card" style={{ maxWidth: '600px', width: '100%', flexDirection: 'column', alignItems: 'stretch', padding: '2.5rem', position: 'relative' }}>
+
+          <button
+            type="button"
+            className="icon-btn"
+            style={{ position: 'absolute', top: '20px', right: '20px', background: isEditing ? '#fef2f2' : '#f0fdf4', color: isEditing ? '#ef4444' : '#059669', zIndex: 10 }}
+            onClick={() => setIsEditing(!isEditing)}
+            title={isEditing ? "Cancel Editing" : "Edit Profile"}
+          >
+            {isEditing ? <X size={18} /> : <Pencil size={18} />}
+          </button>
 
           <form onSubmit={handleSubmit}>
-            {/* Avatar Section */}
-            <div style={styles.avatarSection}>
-              <div style={styles.avatarWrapper}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem', position: 'relative' }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
                 <img
-                  src={photoPreview || "/default-avatar.png"}
-                  alt="Profile"
-                  style={styles.avatar}
+                  src={photoPreview || `https://ui-avatars.com/api/?name=${form.name}&background=059669&color=fff`}
+                  alt="Dealer"
+                  style={{ width: '120px', height: '120px', borderRadius: '50%', objectFit: 'cover', border: '4px solid white', boxShadow: 'var(--user-shadow-md)' }}
                 />
                 {isEditing && (
-                  <>
-                    <label style={styles.photoUpload}>
-                      <input
-                        type="file"
-                        onChange={handlePhotoChange}
-                        accept="image/*"
-                        style={{ display: "none" }}
-                      />
-                      <Edit size={20} />
-                    </label>
-                    <div style={styles.photoHint}>
-                      Click to upload new photo
-                    </div>
-                  </>
+                  <label className="icon-btn" style={{ position: 'absolute', bottom: '5px', right: '5px', background: 'var(--user-primary)', color: 'white', cursor: 'pointer', boxShadow: 'var(--user-shadow-sm)' }}>
+                    <Camera size={18} />
+                    <input type="file" onChange={handlePhotoChange} style={{ display: 'none' }} accept="image/*" />
+                  </label>
                 )}
               </div>
-              
-              <div style={styles.avatarInfo}>
-                <h2 style={styles.name}>{form.name}</h2>
-                <div style={styles.badge}>Dealer Account</div>
+              <p style={{ marginTop: '1rem', color: 'var(--user-text-main)', fontSize: '1.25rem', fontWeight: 700 }}>{form.name}</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+              <div className="user-field-group">
+                <label><User size={14} style={{ marginRight: '6px' }} /> Business Name</label>
+                <input
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Legal business name"
+                  required
+                  disabled={!isEditing}
+                  style={!isEditing ? { background: '#f8fafc', borderColor: 'transparent' } : {}}
+                />
+              </div>
+              <div className="user-field-group">
+                <label><Mail size={14} style={{ marginRight: '6px' }} /> Email Address</label>
+                <input value={form.email} disabled style={{ background: '#f8fafc', cursor: 'not-allowed', borderColor: 'transparent' }} />
               </div>
             </div>
 
-            {/* Profile Information */}
-            <div style={styles.infoGrid}>
-              {/* Email */}
-              <div style={styles.infoCard}>
-                <div style={styles.infoIcon}>
-                  <Mail size={20} />
-                </div>
-                <div style={styles.infoContent}>
-                  <label style={styles.infoLabel}>Email Address</label>
-                  <div style={styles.infoValue}>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        value={form.email}
-                        disabled
-                        style={styles.input}
-                      />
-                    ) : (
-                      <p>{form.email}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div style={styles.infoCard}>
-                <div style={styles.infoIcon}>
-                  <Phone size={20} />
-                </div>
-                <div style={styles.infoContent}>
-                  <label style={styles.infoLabel}>Phone Number</label>
-                  <div style={styles.infoValue}>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        required
-                        style={styles.input}
-                        placeholder="Enter phone number"
-                      />
-                    ) : (
-                      <p>{form.phone || "Not provided"}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Name */}
-              <div style={styles.infoCard}>
-                <div style={styles.infoIcon}>
-                  <User size={20} />
-                </div>
-                <div style={styles.infoContent}>
-                  <label style={styles.infoLabel}>Full Name</label>
-                  <div style={styles.infoValue}>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        required
-                        style={styles.input}
-                        placeholder="Enter your full name"
-                      />
-                    ) : (
-                      <p>{form.name}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Address */}
-              <div style={styles.infoCard}>
-                <div style={styles.infoIcon}>
-                  <MapPin size={20} />
-                </div>
-                <div style={styles.infoContent}>
-                  <label style={styles.infoLabel}>Business Address</label>
-                  <div style={styles.infoValue}>
-                    {isEditing ? (
-                      <textarea
-                        name="address"
-                        value={form.address}
-                        onChange={handleChange}
-                        style={styles.textarea}
-                        placeholder="Enter your business address"
-                        rows="3"
-                      />
-                    ) : (
-                      <p>{form.address || "Not provided"}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Location Coordinates */}
-              <div style={styles.infoCard}>
-                <div style={styles.infoIcon}>
-                  <Navigation size={20} />
-                </div>
-                <div style={styles.infoContent}>
-                  <label style={styles.infoLabel}>Location Coordinates</label>
-                  <div style={styles.coordinateGrid}>
-                    {isEditing ? (
-                      <>
-                        <div>
-                          <label style={styles.coordinateLabel}>Latitude</label>
-                          <input
-                            type="number"
-                            name="lat"
-                            value={form.lat}
-                            onChange={handleChange}
-                            style={styles.coordinateInput}
-                            placeholder="e.g., 40.7128"
-                            step="any"
-                          />
-                        </div>
-                        <div>
-                          <label style={styles.coordinateLabel}>Longitude</label>
-                          <input
-                            type="number"
-                            name="lng"
-                            value={form.lng}
-                            onChange={handleChange}
-                            style={styles.coordinateInput}
-                            placeholder="e.g., -74.0060"
-                            step="any"
-                          />
-                        </div>
-                      </>
-                    ) : (
-                      <div style={styles.coordinatesDisplay}>
-                        <div style={styles.coordinateItem}>
-                          <span style={styles.coordinateLabel}>Lat:</span>
-                          <span>{form.lat || "Not set"}</span>
-                        </div>
-                        <div style={styles.coordinateItem}>
-                          <span style={styles.coordinateLabel}>Lng:</span>
-                          <span>{form.lng || "Not set"}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="user-field-group">
+                <label><Phone size={14} style={{ marginRight: '6px' }} /> Contact Number</label>
+                <input
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="Business phone"
+                  required
+                  disabled={!isEditing}
+                  style={!isEditing ? { background: '#f8fafc', borderColor: 'transparent' } : {}}
+                />
               </div>
             </div>
 
-            {/* Save Button (Only in Edit Mode) */}
+            <div className="user-field-group" style={{ marginTop: '1.5rem' }}>
+              <label><MapPin size={14} style={{ marginRight: '6px' }} /> Business Address</label>
+              <textarea
+                name="address"
+                value={form.address}
+                onChange={handleChange}
+                placeholder="Complete business address..."
+                rows={3}
+                disabled={!isEditing}
+                style={!isEditing ? { background: '#f8fafc', borderColor: 'transparent', resize: 'none' } : {}}
+              />
+            </div>
+
+            <div className="user-field-group" style={{ marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ margin: 0 }}><Navigation size={14} style={{ marginRight: '6px' }} /> GPS Coordinates</label>
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={getCurrentLocation}
+                    className="user-btn-premium"
+                    style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', background: '#eff6ff', color: '#0369a1', border: '1px solid #bae6fd' }}
+                  >
+                    <Navigation size={14} />
+                    <span>Get Current Location</span>
+                  </button>
+                )}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '0.5rem' }}>
+                <input
+                  name="lat"
+                  value={form.lat}
+                  onChange={handleChange}
+                  placeholder="Latitude"
+                  disabled={!isEditing}
+                  style={!isEditing ? { background: '#f8fafc', borderColor: 'transparent' } : {}}
+                />
+                <input
+                  name="lng"
+                  value={form.lng}
+                  onChange={handleChange}
+                  placeholder="Longitude"
+                  disabled={!isEditing}
+                  style={!isEditing ? { background: '#f8fafc', borderColor: 'transparent' } : {}}
+                />
+              </div>
+            </div>
+
             {isEditing && (
-              <div style={styles.actionBar}>
-                <button 
-                  type="submit" 
-                  disabled={saving} 
-                  style={styles.saveButton}
-                >
-                  {saving ? (
-                    <>
-                      <div style={styles.spinner}></div>
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save size={18} style={{ marginRight: 8 }} />
-                      Save Changes
-                    </>
-                  )}
-                </button>
-              </div>
+              <button type="submit" className="user-btn-premium user-btn-primary" disabled={saving} style={{ width: '100%', justifyContent: 'center', marginTop: '2rem' }}>
+                {saving ? "Saving Changes..." : (
+                  <>
+                    <Save size={18} />
+                    <span>Update Profile</span>
+                  </>
+                )}
+              </button>
             )}
           </form>
         </div>
@@ -385,310 +260,3 @@ export default function DealerProfile() {
     </div>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #f0f7f0 0%, #e8f5e8 100%)",
-    padding: "20px",
-  },
-  container: {
-    maxWidth: "800px",
-    margin: "0 auto",
-  },
-  loadingContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #f0f7f0 0%, #e8f5e8 100%)",
-  },
-  loadingSpinner: {
-    width: "50px",
-    height: "50px",
-    border: "4px solid #e8f5e8",
-    borderTop: "4px solid #2e7d32",
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-    marginBottom: "20px",
-  },
-  loadingText: {
-    color: "#2e7d32",
-    fontSize: "16px",
-    fontWeight: "500",
-  },
-  profileCard: {
-    background: "#ffffff",
-    borderRadius: "16px",
-    boxShadow: "0 10px 40px rgba(46, 125, 50, 0.08)",
-    padding: "30px",
-    marginTop: "20px",
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "30px",
-    paddingBottom: "20px",
-    borderBottom: "1px solid #e0e0e0",
-  },
-  title: {
-    fontSize: "28px",
-    fontWeight: "700",
-    color: "#1b5e20",
-    margin: "0",
-  },
-  editButton: {
-    display: "flex",
-    alignItems: "center",
-    background: "linear-gradient(135deg, #2e7d32, #4caf50)",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "50px",
-    fontSize: "14px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    boxShadow: "0 4px 12px rgba(46, 125, 50, 0.2)",
-  },
-  cancelButton: {
-    display: "flex",
-    alignItems: "center",
-    background: "#f5f5f5",
-    color: "#666",
-    border: "1px solid #ddd",
-    padding: "10px 20px",
-    borderRadius: "50px",
-    fontSize: "14px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  avatarSection: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "40px",
-    padding: "20px",
-    background: "#f9fdf9",
-    borderRadius: "12px",
-    border: "1px solid #e8f5e9",
-  },
-  avatarWrapper: {
-    position: "relative",
-    marginRight: "20px",
-  },
-  avatar: {
-    width: "100px",
-    height: "100px",
-    borderRadius: "50%",
-    objectFit: "cover",
-    border: "4px solid #2e7d32",
-    boxShadow: "0 4px 12px rgba(46, 125, 50, 0.2)",
-  },
-  photoUpload: {
-    position: "absolute",
-    bottom: "0",
-    right: "0",
-    background: "#2e7d32",
-    color: "white",
-    width: "36px",
-    height: "36px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    border: "2px solid white",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-  },
-  photoHint: {
-    position: "absolute",
-    bottom: "-25px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    fontSize: "12px",
-    color: "#666",
-    whiteSpace: "nowrap",
-  },
-  avatarInfo: {
-    flex: "1",
-  },
-  name: {
-    fontSize: "24px",
-    fontWeight: "700",
-    color: "#1b5e20",
-    margin: "0 0 8px 0",
-  },
-  badge: {
-    display: "inline-block",
-    background: "linear-gradient(135deg, #e8f5e9, #c8e6c9)",
-    color: "#2e7d32",
-    padding: "4px 12px",
-    borderRadius: "20px",
-    fontSize: "12px",
-    fontWeight: "600",
-  },
-  infoGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    gap: "20px",
-    marginBottom: "30px",
-  },
-  infoCard: {
-    background: "#ffffff",
-    border: "1px solid #e8f5e9",
-    borderRadius: "12px",
-    padding: "20px",
-    display: "flex",
-    alignItems: "flex-start",
-    transition: "all 0.3s ease",
-    boxShadow: "0 2px 8px rgba(46, 125, 50, 0.05)",
-  },
-  infoIcon: {
-    background: "linear-gradient(135deg, #e8f5e9, #c8e6c9)",
-    color: "#2e7d32",
-    width: "40px",
-    height: "40px",
-    borderRadius: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: "15px",
-    flexShrink: "0",
-  },
-  infoContent: {
-    flex: "1",
-  },
-  infoLabel: {
-    display: "block",
-    fontSize: "12px",
-    fontWeight: "600",
-    color: "#666",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-    marginBottom: "6px",
-  },
-  infoValue: {
-    fontSize: "16px",
-    color: "#333",
-    fontWeight: "500",
-  },
-  input: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "2px solid #e0e0e0",
-    borderRadius: "8px",
-    fontSize: "14px",
-    transition: "all 0.3s ease",
-    outline: "none",
-    boxSizing: "border-box",
-  },
-  textarea: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "2px solid #e0e0e0",
-    borderRadius: "8px",
-    fontSize: "14px",
-    transition: "all 0.3s ease",
-    outline: "none",
-    boxSizing: "border-box",
-    resize: "vertical",
-    fontFamily: "inherit",
-  },
-  coordinateGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "15px",
-    marginTop: "8px",
-  },
-  coordinateLabel: {
-    display: "block",
-    fontSize: "12px",
-    fontWeight: "600",
-    color: "#666",
-    marginBottom: "4px",
-  },
-  coordinateInput: {
-    width: "100%",
-    padding: "10px 12px",
-    border: "2px solid #e0e0e0",
-    borderRadius: "8px",
-    fontSize: "14px",
-    transition: "all 0.3s ease",
-    outline: "none",
-    boxSizing: "border-box",
-  },
-  coordinatesDisplay: {
-    display: "flex",
-    gap: "20px",
-  },
-  coordinateItem: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px",
-  },
-  actionBar: {
-    display: "flex",
-    justifyContent: "flex-end",
-    paddingTop: "20px",
-    borderTop: "1px solid #e0e0e0",
-  },
-  saveButton: {
-    display: "flex",
-    alignItems: "center",
-    background: "linear-gradient(135deg, #2e7d32, #4caf50)",
-    color: "white",
-    border: "none",
-    padding: "12px 30px",
-    borderRadius: "50px",
-    fontSize: "15px",
-    fontWeight: "600",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    boxShadow: "0 4px 15px rgba(46, 125, 50, 0.3)",
-  },
-  spinner: {
-    width: "16px",
-    height: "16px",
-    border: "2px solid rgba(255,255,255,0.3)",
-    borderTop: "2px solid white",
-    borderRadius: "50%",
-    animation: "spin 1s linear infinite",
-    marginRight: "8px",
-  },
-};
-
-// Add CSS animation
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(`
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`, styleSheet.cssRules.length);
-
-// Add hover effects
-styleSheet.insertRule(`
-  .edit-button:hover, .save-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  .info-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
-    border-color: #c8e6c9;
-  }
-`, styleSheet.cssRules.length);
-
-styleSheet.insertRule(`
-  input:focus, textarea:focus {
-    border-color: #4caf50;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-  }
-`, styleSheet.cssRules.length);

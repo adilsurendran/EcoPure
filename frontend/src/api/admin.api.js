@@ -1,6 +1,7 @@
 import API from "./axios";
 
 export const fetchUsers = () => API.get("/admin/users");
+export const getAdminStats = () => API.get("/admin/stats");
 export const toggleUserStatus = (authId) => API.patch(`/admin/users/${authId}/toggle`);
 export const fetchWorkers = () => API.get("/admin/workers");
 export const toggleWorkerStatus = (authId) => {

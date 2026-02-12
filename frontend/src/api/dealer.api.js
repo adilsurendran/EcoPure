@@ -7,22 +7,25 @@ export const registerDealer = (data) =>
     },
   });
 
-  export const getDealerProfile = () =>
+export const getDealerProfile = () =>
   API.get("/dealer/profile");
 
-  export const updateDealerProfile = (data) =>
+export const updateDealerProfile = (data) =>
   API.put("/dealer/profile", data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 
+export const getDealerStats = () =>
+  API.get("/dealer/stats");
+
 // waste post
 export const getAllWastePosts = () =>
   API.get("/dealer/waste-posts");
 
 export const createWasteRequest = (data) =>
-  API.post("/dealer/waste-request", data);  
+  API.post("/dealer/waste-request", data);
 
 export const getDealerRequests = () =>
   API.get("/dealer/requests");

@@ -1,6 +1,9 @@
 import bcrypt from "bcryptjs";
 import Login from "../models/Login.js";
 import Dealer from "../models/Dealer.js";
+import WastePost from "../models/WastePost.js";
+import WasteRequest from "../models/WasteRequest.js";
+import DealerDirectRequest from "../models/DealerDirectRequest.js";
 
 export const registerDealer = async (req, res) => {
   try {
@@ -119,5 +122,42 @@ export const updateDealerProfile = async (req, res) => {
   } catch (error) {
     console.error("Update dealer profile error:", error);
     res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+/* =========================
+   GET DEALER DASHBOARD STATS
+========================= */
+export const getDealerStats = async (req, res) => {
+  try {
+    const loginId = req.user.id;
+    const dealer = await Dealer.findOne({ authId: loginId }).select("_id");
+    if (!dealer) {
+      return res.status(404).json({ message: "Dealer not found" });
+    }
+
+    // 1. Total Active Waste Posts (Market Opportunities)
+    const activePosts = await WastePost.countDocuments({ availableWeight: { $gt: 0 } });
+
+    // 2. Pending Indirect Requests (My Bids)
+    const pendingIndirect = await WasteRequest.countDocuments({
+      dealerId: dealer._id,
+      status: "pending"
+    });
+
+    // 3. Pending Direct Requests (My Direct Orders)
+    const pendingDirect = await DealerDirectRequest.countDocuments({
+      dealerId: dealer._id,
+      status: "pending"
+    });
+
+    res.status(200).json({
+      activePosts,
+      pendingIndirect,
+      pendingDirect
+    });
+  } catch (err) {
+    console.error("Dealer Stats Error:", err);
+    res.status(500).json({ message: "Failed to fetch dealer stats" });
   }
 };

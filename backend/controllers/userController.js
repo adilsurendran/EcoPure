@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import Login from "../models/Login.js";
 import User from "../models/User.js";
 import UserFeedback from "../models/UserFeedback.js";
+import Complaint from "../models/Complaint.js";
+import PickupRequest from "../models/pickupRequest.js";
 
 export const registerUser = async (req, res) => {
   try {
@@ -13,14 +15,13 @@ export const registerUser = async (req, res) => {
       pin,
       lat,
       lng,
-      username,
       password,
     } = req.body;
     console.log(req.body);
-    
+
 
     // 1️⃣ Check username already exists
-    const existing = await Login.findOne({ username });
+    const existing = await Login.findOne({ username: email });
     if (existing) {
       return res.status(400).json({ message: "Username already exists" });
     }
@@ -29,7 +30,7 @@ export const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const auth = await Login.create({
-      username:email,
+      username: email,
       password: hashedPassword,
       role: "user",
     });
@@ -58,7 +59,6 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const getUserProfile = async (req, res) => {
   try {
@@ -155,5 +155,42 @@ export const sendUserFeedback = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to send feedback" });
+  }
+};
+
+/* =========================
+   GET USER DASHBOARD STATS
+========================= */
+export const getUserStats = async (req, res) => {
+  try {
+    const loginId = req.user.id;
+    const user = await User.findOne({ authId: loginId }).select("_id");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // 1. Total Pickup Requests by User
+    const totalPickups = await PickupRequest.countDocuments({ userId: user._id });
+
+    // 2. Pending Pickup Requests
+    const pendingPickups = await PickupRequest.countDocuments({
+      userId: user._id,
+      status: "pending"
+    });
+
+    // 3. Pending Complaints (Awaiting reply from Admin)
+    const pendingComplaints = await Complaint.countDocuments({
+      userId: user._id,
+      reply: { $exists: false }
+    });
+
+    res.status(200).json({
+      totalPickups,
+      pendingPickups,
+      pendingComplaints
+    });
+  } catch (err) {
+    console.error("User Stats Error:", err);
+    res.status(500).json({ message: "Failed to fetch user stats" });
   }
 };

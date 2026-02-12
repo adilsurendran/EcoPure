@@ -6,8 +6,6 @@ import Users from "../Users";
 import Workers from "../Workers";
 import AssignWorkers from "../AssignWorkers";
 import Dealers from "../Dealers";
-import Complaints from "../Complaints";
-import Feedback from "../Feedback";
 import AdminWaste from "../AdminWaste";
 import AdminWasteRequests from "../AdminWasteRequests";
 import AdminDirectRequests from "../AdminDirectRequests";

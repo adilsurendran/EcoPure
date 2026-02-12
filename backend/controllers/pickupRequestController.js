@@ -79,6 +79,8 @@ export const cancelPickupRequest = async (req, res) => {
   }
 };
 export const markPickupCollected = async (req, res) => {
+  console.log(req.params,"hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  
   try {
     const userLoginId = req.user.id;
 
@@ -119,6 +121,8 @@ export const markPickupCollected = async (req, res) => {
 
 /* ---------------- GET ALL PICKUPS (FILTERABLE) ---------------- */
 export const getAllPickups = async (req, res) => {
+  console.log(req.query);
+  
   try {
     const { status } = req.query;
 

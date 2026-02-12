@@ -1,52 +1,117 @@
 .dealer-container {
   display: flex;
   height: 100vh;
+  background-color: var(--dealer-bg);
+  overflow: hidden;
 }
 
 .dealer-sidebar {
-  width: 230px;
-  background: linear-gradient(180deg, #145a32, #27ae60);
-  color: white;
-  padding: 20px;
+  width: 280px;
+  background: var(--dealer-sidebar-bg);
+  border-right: 1px solid var(--dealer-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 2.5rem 2rem;
 }
 
 .dealer-sidebar .logo {
-  font-size: 22px;
-  margin-bottom: 30px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--dealer-primary);
+  display: flex;
+  flex-direction: column;
 }
 
-.dealer-sidebar nav a {
-  display: block;
-  padding: 10px;
-  color: #ecf0f1;
+.dealer-sidebar .logo span {
+  font-size: 0.75rem;
+  color: var(--dealer-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: -4px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  color: #64748b;
   text-decoration: none;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
 }
 
-.dealer-sidebar nav a.active,
-.dealer-sidebar nav a:hover {
-  background: rgba(255, 255, 255, 0.2);
+.sidebar-nav a:hover {
+  color: var(--dealer-primary);
+  background: rgba(6, 78, 59, 0.04);
+}
+
+.sidebar-nav a.active {
+  color: var(--dealer-primary);
+  background: rgba(6, 78, 59, 0.08);
+  border-left-color: var(--dealer-primary);
+}
+
+.sidebar-footer {
+  padding: 2rem;
+  border-top: 1px solid var(--dealer-border);
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem;
+  background: #fff1f2;
+  color: #e11d48;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #ffe4e6;
+  transform: translateY(-2px);
 }
 
 .dealer-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-.dealer-topbar {
-  height: 60px;
-  background: #ffffff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+  position: relative;
 }
 
 .dealer-content {
-  padding: 25px;
-  background: #f4f6f8;
   flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  background: var(--dealer-bg);
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
 }

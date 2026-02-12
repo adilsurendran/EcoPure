@@ -7,7 +7,7 @@ export const registerUser = (data) =>
     },
   });
 
-  export const getUserProfile = () =>
+export const getUserProfile = () =>
   API.get("/user/profile");
 
 export const updateUserProfile = (data) =>
@@ -17,11 +17,14 @@ export const updateUserProfile = (data) =>
     },
   });
 
-  export const sendUserFeedback = (data) =>
+export const sendUserFeedback = (data) =>
   API.post("/feedback", data);
 
-  export const sendComplaint = (data) =>
+export const sendComplaint = (data) =>
   API.post("/complaints", data);
 
 export const getMyComplaints = () =>
   API.get("/complaints/my");
+
+export const getUserStats = () =>
+  API.get("/user/stats");

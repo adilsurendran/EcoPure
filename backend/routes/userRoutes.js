@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserProfile, registerUser, sendUserFeedback, updateUserProfile } from "../controllers/userController.js";
+import { getUserProfile, getUserStats, registerUser, sendUserFeedback, updateUserProfile } from "../controllers/userController.js";
 import { upload } from "../middlewares/upload.js";
 import { requireAuth } from "../middlewares/authMiddleware.js";
 import { authorizeRoles } from "../middlewares/roleMiddleware.js";
@@ -28,6 +28,13 @@ userRoutes.post(
   requireAuth,
   authorizeRoles("user"),
   sendUserFeedback
+);
+
+userRoutes.get(
+  "/user/stats",
+  requireAuth,
+  authorizeRoles("user"),
+  getUserStats
 );
 
 export default userRoutes;
